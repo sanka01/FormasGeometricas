@@ -62,6 +62,7 @@ public abstract class Geometria {
 
     }
     public Geometria setXY(float x, float y ){
+
         posX = x;
         posY = y;
         return this;

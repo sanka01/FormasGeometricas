@@ -1,6 +1,5 @@
 package br.unitins.formasgeometricas;
 
-import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
