@@ -1,22 +1,15 @@
 package br.unitins.formasgeometricas;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -53,7 +46,7 @@ public class TelaPrincipal extends AppCompatActivity {
 }
 
 //Classe que ira implementar a logica do desenho
-class Render implements GLSurfaceView.Renderer, View.OnTouchListener, SensorEventListener {
+class Render implements GLSurfaceView.Renderer, View.OnTouchListener {
 
     ArrayList<Geometria> formas = null;
 
@@ -65,13 +58,9 @@ class Render implements GLSurfaceView.Renderer, View.OnTouchListener, SensorEven
     float altura = 0;
     static final int TAMANHO = 150;
 
-    float sensorX, sensorY, sensorZ;
     long inicioToque;
     AppCompatActivity tela;
 
-    private SensorManager sensor;
-    private Sensor acelerometro;
-    private List<Sensor> deviceSensors;
 
     public Render(AppCompatActivity v) {
         this.tela = v;
@@ -81,10 +70,7 @@ class Render implements GLSurfaceView.Renderer, View.OnTouchListener, SensorEven
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         //define a cor de limpeza no formato RGBA
         gl.glClearColor(0, 0, 0, 1);
-        sensor = (SensorManager) tela.getSystemService(Context.SENSOR_SERVICE);
 
-        acelerometro = sensor.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensor.registerListener(this, acelerometro, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -145,22 +131,9 @@ class Render implements GLSurfaceView.Renderer, View.OnTouchListener, SensorEven
         botaoP.desenha();
         for (Geometria forma : formas) {
             forma.desenha();
-            if (naTela(forma))
-                forma.setXY(forma.getPosX() - sensorX, forma.getPosY());
-
-
         }
     }
 
-    public boolean naTela(Geometria x) {
-        if (x.getPosX()  <= largura- x.tamanho && x.getPosX() > 0) {
-            Log.i("tela", "dentro");
-            return true;
-        }
-
-        Log.i("tela", "fora");
-        return false;
-    }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -318,17 +291,5 @@ class Render implements GLSurfaceView.Renderer, View.OnTouchListener, SensorEven
         view.show();
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
 
-        sensorX = event.values[0];
-        sensorY = event.values[1];
-        sensorZ = event.values[2];
-//        Log.i("sensorAcelerometro", "X: " + sensorX + " Y: " + sensorY + " Z: " + sensorZ);
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
 }
